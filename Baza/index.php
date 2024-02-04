@@ -22,6 +22,7 @@ if(isset($_SESSION['logged'])){
               <input type="password" class='password' name='password' placeholder="Hasło">
               <input type='submit' class='submit' name='submit' value="Zaloguj">
               <a class='register_button' href='http://infolut1.cba.pl/Baza/register.php'>Rejestracja</a>
+              <a class='reset_button' href='http://infolut1.cba.pl/Baza/password_reset.php'>Zapomniałem hasła</a>
               <?php
               if(isset($_SESSION['error'])){
                 echo "<div class='message'>".$_SESSION['error']."</div>";

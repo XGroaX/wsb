@@ -182,3 +182,18 @@
 
 }
 
+.reset_button{
+
+    /* display: block; */
+  
+    align-self: flex-start;
+  
+    text-decoration: none;
+  
+    color: black;
+  
+    padding:2px;
+  
+    font-size: 15px;
+  
+  }
