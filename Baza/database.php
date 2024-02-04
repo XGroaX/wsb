@@ -562,19 +562,49 @@ if(isset($_SESSION['przypisana'])){
 
                                         echo "<span class='message2'>Dodaj nowy produkt</span><br>";
 
-                                            echo "<label for='nazwa'>Nazwa produktu:</label>";
+                                            echo "<label class='cart_word' for='nazwa'>Nazwa produktu:</label>";
 
-                                            echo "<input type='text' name='nazwa'  class='input_text' required><br><br>";
+                                            echo "<input type='text' name='nazwa'  class='cart_name' required><br>";
 
-                                            echo "<label for='ilosc'>Ilość:</label>";
+                                            echo "<div class='cart_flex'><div class='cart_half'>ILOŚĆ:</div> <div class='cart_half'>CENA:</div></div>";
 
-                                            echo "<input type='number' name='ilosc' class='input_text' required><br><br>";
+                                            echo "<div><input type='number' name='ilosc' class='cart_word_input' required><input type='number' name='cena' step='0.01' class='cart_word_input' required></div>";
 
-                                            echo "<label for='cena'>Cena:</label>";
+                                            echo "<br><label class='cart_word' for='magazyn'>Wybierz magazyn:</label>";
 
-                                            echo "<input type='number' name='cena' step='0.01' class='input_text' required><br><br>";
+                                            echo "<select name='this_magazine' class='select_magazine1'>";
+                                                // WYBÓR MAGAZYNU
+    
+                                                    if($connected==true){
+    
+                                                        $list_magazines="SELECT * FROM `Magazyn` WHERE 1";
+    
+                                                        $show_magazines = mysqli_query($connect,$list_magazines);
+    
+                                                        $num_magazines= mysqli_num_rows($show_magazines);
+    
+                                                        for($i=0;$i<$num_magazines;$i++){
+    
+                                                            $mag_row=mysqli_fetch_assoc($show_magazines);
+    
+                                                            if($mag_row['id_magazynu'] == $_SESSION['which_magazine'] && isset($_SESSION['which_magazine'])){
+    
+                                                                echo "<option selected value='".$mag_row['id_magazynu']."'>".$mag_row['nazwa']."</option>";
+    
+                                                            }else{
+    
+                                                                echo "<option value='".$mag_row['id_magazynu']."'>".$mag_row['nazwa']."</option>";
+    
+                                                            }
+    
+                                                        }
+    
+                                                    }
+                                   
+                                            echo "</select><br><br><br>";
 
-                                            echo "<input type='submit' name='add_product_to_base' value='Dodaj produkt' class='submit_button'>";
+                                            echo "<input type='submit' name='add_product_to_base' value='Dodaj produkt' style='width:308px' class='super_option'>";
+
 
                                     echo "</div>";
                             echo "</form>";
@@ -589,9 +619,7 @@ if(isset($_SESSION['przypisana'])){
                                         $nazwa = $_POST['nazwa'];
                                         $ilosc = $_POST['ilosc'];
                                         $cena = $_POST['cena'];
-
-                                        // Stała wartość dla id_magazynu
-                                        $id_magazynu = 1;
+                                        $id_magazynu = $_POST['this_magazine'];
 
                                         // Przygotuj zapytanie SQL do wstawienia danych
                                         $query123 = "INSERT INTO Produkty (nazwa, ilosc, cena, id_magazynu) VALUES ('$nazwa', $ilosc, $cena, $id_magazynu)";

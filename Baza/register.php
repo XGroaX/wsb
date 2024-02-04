@@ -18,7 +18,8 @@ if(isset($_SESSION['logged'])){
         <div class="login_container">
           <form action="register_now.php" method="post">
             <div class="login_box">
-              <input type="text" class='password' name="reg_login" placeholder="nazwa użytkownika">
+              <input type="text" class='password' name="reg_login" placeholder="Nazwa użytkownika">
+              <input type="text" class='password' name="reg_email" placeholder="Adres email">
               <input type="password" class='password' name='reg_pass1' placeholder="Hasło">
               <input type="password" class='password' name='reg_pass2' placeholder="Powtórz hasło">
               <label class='checkbox_class'><input type="checkbox" name='reg_check'> Akceptuje regulamin</label>

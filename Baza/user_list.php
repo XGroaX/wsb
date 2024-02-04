@@ -27,23 +27,127 @@ if(!isset($_SESSION['logged']) || $_SESSION['super_user']==0){
                     mysqli_set_charset($connect,"utf8");
                     $connected=true;
 
-                    $q_list="SELECT * FROM `user` ORDER BY id";
-                    if($list=mysqli_query($connect,$q_list)){
-                      $list_num_rows=mysqli_num_rows($list);
-                      echo "<table>";
-                      echo "<form action='' method='post'>";
-                      for ($i=1; $i <= $list_num_rows; $i++) {
-                        $list_row=mysqli_fetch_assoc($list);
-                        echo "<tr><td class='password'>".$list_row['id']."</td>
-                          <td class='password'>". $list_row['login']."</td> 
-                          <td class='password'>".$list_row['rank']."</td> 
-                          <td class='password'><form action='' method='post'><input type='hidden' name='id_to_change' value='" . $list_row['id'] . "'><select name='rank_change' class='select'><option value='2'>Administrator</option><option value='1'>Użytkownik</option><!-- Dodaj opcje dla innych rang --></select><button type='submit' name='change_rank' class='change'>Zmień rangę</button></form></td>
-                          <td class='password'><form action='' method='post'><input type='hidden' name='id_to_delete' value='".$list_row['id']."'><button style='border:none;cursor:pointer;' type='submit' name='user_delete'><img src='http://infolut1.cba.pl/Baza/pictures/remove.png'></button></form></td>
-                          </tr>";
-                      }
-                      echo "</form>";
-                      echo "</table>";
-                    }
+                    $q_list = "SELECT * FROM `user` WHERE `email` LIKE '%$search_term%' OR `id` = '$search_term' ORDER BY id";
+
+                      echo "<form action='' method='post'>
+                            <label for='search_term'>Szukaj po adresie email bądź ID użytkownika:</label><input type='text' class='password' name='search_term' id='search_term'><button type='submit' class='change' name='search_user'>Szukaj</button>
+                            </form>";
+// Check if the search form is submitted
+if (isset($_POST['search_user'])) {
+  $search_term = $_POST['search_term'];
+
+  // Perform a search query
+  $q_search = "SELECT * FROM `user` WHERE `email` LIKE '%$search_term%' OR `id` = '$search_term'";
+  if ($result = mysqli_query($connect, $q_search)) {
+      $search_num_rows = mysqli_num_rows($result);
+
+      if ($search_num_rows > 0) {
+          echo "<table>";
+          echo "<tr>
+                  <th class='password'>ID</th>
+                  <th class='password'>Login</th>
+                  <th class='password'>Email</th>
+                  <th class='password'>Ranga</th>
+                  <th class='password'>Zmiana adresu</th>
+                  <th class='password'>Zmiana rangi</th>
+                  <th class='password'>Usuń</th>
+              </tr>";
+
+          while ($row = mysqli_fetch_assoc($result)) {
+              echo "<tr>
+                      <td class='password'>{$row['id']}</td>
+                      <td class='password'>{$row['login']}</td>
+                      <td class='password'>{$row['email']}</td>
+                      <td class='password'>{$row['rank']}</td>
+                      <td class='password'>
+                          <form action='' method='post'>
+                              <input type='hidden' name='id_to_change_email' value='{$row['id']}'>
+                              <input type='text' name='email_change[{$row['id']}]' placeholder='Nowy email' class='input-field' required>
+                              <button type='submit' name='change_email' class='change'>Zmień email</button>
+                          </form>
+                      </td>
+                      <td class='password'>
+                          <form action='' method='post'>
+                              <input type='hidden' name='id_to_change' value='{$row['id']}'>
+                              <select name='rank_change' class='select'>
+                                  <option value='2'>Administrator</option>
+                                  <option value='1'>Użytkownik</option><!-- Dodaj opcje dla innych rang -->
+                              </select>
+                              <button type='submit' name='change_rank' class='change'>Zmień rangę</button>
+                          </form>
+                      </td>
+                      <td class='password'>
+                          <form action='' method='post'>
+                              <input type='hidden' name='id_to_delete' value='{$row['id']}'>
+                              <button style='border:none;cursor:pointer;' type='submit' name='user_delete'>
+                                  <img src='http://infolut1.cba.pl/Baza/pictures/remove.png'>
+                              </button>
+                          </form>
+                      </td>
+                  </tr>";
+          }
+
+          echo "</table>";
+      } else {
+          echo "<div class='message'>No results found.</div>";
+      }
+
+      mysqli_free_result($result);
+  } else {
+      echo "<div class='message'>Error in search query: " . mysqli_error($connect) . "</div>";
+  }
+} else {
+  // Display all users when no search is performed
+  $q_list = "SELECT * FROM `user` ORDER BY id";
+  if ($list = mysqli_query($connect, $q_list)) {
+      echo "<table>";
+      echo "<tr>
+              <th class='password'>ID</th>
+              <th class='password'>Login</th>
+              <th class='password'>Email</th>
+              <th class='password'>Ranga</th>
+              <th class='password'>Zmiana adresu</th>
+              <th class='password'>Zmiana rangi</th>
+              <th class='password'>Usuń</th>
+          </tr>";
+
+      while ($list_row = mysqli_fetch_assoc($list)) {
+          echo "<tr>
+                  <td class='password'>{$list_row['id']}</td>
+                  <td class='password'>{$list_row['login']}</td>
+                  <td class='password'>{$list_row['email']}</td>
+                  <td class='password'>{$list_row['rank']}</td>
+                  <td class='password'>
+                      <form action='' method='post'>
+                          <input type='hidden' name='id_to_change_email' value='{$list_row['id']}'>
+                          <input type='text' name='email_change[{$list_row['id']}]' placeholder='Nowy email' class='input-field' required>
+                          <button type='submit' name='change_email' class='change'>Zmień email</button>
+                      </form>
+                  </td>
+                  <td class='password'>
+                      <form action='' method='post'>
+                          <input type='hidden' name='id_to_change' value='{$list_row['id']}'>
+                          <select name='rank_change' class='select'>
+                              <option value='2'>Administrator</option>
+                              <option value='1'>Użytkownik</option><!-- Dodaj opcje dla innych rang -->
+                          </select>
+                          <button type='submit' name='change_rank' class='change'>Zmień rangę</button>
+                      </form>
+                  </td>
+                  <td class='password'>
+                      <form action='' method='post'>
+                          <input type='hidden' name='id_to_delete' value='{$list_row['id']}'>
+                          <button style='border:none;cursor:pointer;' type='submit' name='user_delete'>
+                              <img src='http://infolut1.cba.pl/Baza/pictures/remove.png'>
+                          </button>
+                      </form>
+                  </td>
+              </tr>";
+      }
+
+      echo "</table>";
+  }
+}
                  }
 //USUWANIE UŻYTKONIKÓW I NADAWANIE RANG
               if(isset($_POST['user_delete'])){
@@ -78,7 +182,24 @@ if(!isset($_SESSION['logged']) || $_SESSION['super_user']==0){
                         exit();
                     }
                 }
-            }
+              }
+                // Handling the email change - check if the form was submitted
+                if (isset($_POST['change_email'])) {
+                  foreach ($_POST['email_change'] as $user_id_email_change => $new_email) {
+                      if (!empty($new_email)) { // Ensure the new email is not empty
+                          $q_update_email = "UPDATE `user` SET `email` = '$new_email' WHERE `id` = '$user_id_email_change'";
+                          if ($q_email_change = mysqli_query($connect, $q_update_email)) {
+                              $_SESSION['manager_error'] = 'Zmieniono email użytkownika o ID ' . $user_id_email_change;
+                              header('Refresh:0');
+                              exit();
+                          } else {
+                              $_SESSION['manager_error'] = 'Nie udało się zmienić emaila użytkownika o ID ' . $user_id_email_change;
+                              header('Refresh:0');
+                              exit();
+                          }
+                      }
+                  }
+                }
               ?>
 
 

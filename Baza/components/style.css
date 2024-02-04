@@ -113,6 +113,17 @@ body{
     color: white;
     text-transform: uppercase;
 }
+.select_magazine1{
+    background-color: #5d8d5f;
+    height: 36px;
+    font-size: 14px;
+    padding: 4px;
+    color: white;
+    width: 308px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+}
 .word{
     text-transform: uppercase;
     height: 36px;
@@ -165,7 +176,7 @@ body{
     left:calc(50% - 30px);
     transform: translateX(-50%);
     border-radius:50%;
-    background-color: #78d6f5;
+    background-color: #dbf3fb;
     height:50px;
     width:50px;
     cursor:pointer;
@@ -175,8 +186,7 @@ body{
 }
 
 .my_database:hover{
-    height: 55px;
-    width: 55px;
+    background-color: #78d6f5;
 }
 
 .buttons_container{
@@ -295,9 +305,46 @@ tbody tr{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #9ec9a0;
+    background-color: #6ba56d;
     padding:25px;
     color:black;
+    -webkit-box-shadow: 5px 5px 100px -8px rgba(107, 165, 109, 1);
+    -moz-box-shadow: 5px 5px 100px -8px rgba(107, 165, 109, 1);
+    box-shadow: 5px 5px 100px -8px rgba(107, 165, 109, 1);
+}
+.cart_name{
+    text-transform: uppercase;
+    height: 36px;
+    width: 308px;
+    background-color: #efefef;
+    padding: 5px;
+}
+.cart_flex{
+    display: flex;
+    flex-direction: row;
+    width: 308px;
+}
+.cart_half{
+    width:50%;
+    text-align: center;
+    font-size: 15px;
+    color: white;
+    padding: 3px;
+    text-transform: uppercase;
+}
+.cart_word{
+    font-size: 15px;
+    color: white;
+    padding: 5px;
+    text-transform: uppercase;
+}
+.cart_word_input{
+    text-transform: uppercase;
+    height: 36px;
+    width: 150px;
+    margin: 2px;
+    background-color: #efefef;
+    padding: 5px;
 }
 .show_my_cart table{
     border-radius:0;
@@ -329,13 +376,9 @@ tbody tr{
 }
 .message2{
     padding: 5px;
-    font-size: 25px;
+    font-size: 24px;
     text-transform: uppercase;
-    color: #575757;
-    background: #b7e1b9;
-    border-radius: 1px;
-    border: 1px solid #575757;
-    margin-bottom: 50px;
+    color: #ffffff;
 }
 .table_container{
     max-height:60vh;
