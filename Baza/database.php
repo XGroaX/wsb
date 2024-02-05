@@ -297,10 +297,6 @@ if(isset($_SESSION['przypisana'])){
                     }
                     echo "<th>KUP</th>";
 
-                    if($_SESSION['super_user']==1){
-                        echo "<th>Zmień cene</th>";
-                        echo "</tr>";
-                    }
 
 
 
@@ -311,17 +307,19 @@ if(isset($_SESSION['przypisana'])){
 
                         echo "<tr id='".$search_row['id_produktu']."'><td class='id_td'><form action='' method='post'><input type='hidden' name='id_produktu' value='".$search_row['id_produktu']."'>".$search_row['id_produktu']."</input></td>";
 
-                        echo "<td>".$search_row['nazwa']."<input type='hidden' name='nazwa' value='".$search_row['nazwa']."'> </td>";
-
-                        echo "<td  class='database_changer'>".$search_row['ilosc']." szt </td>";
-
+                        if($_SESSION['super_user']==1){
+                            echo "<td class='fix'><form action='' method='post'><input type='hidden' name='product_id' value='".$search_row['id_produktu']."'> <div class='buttons_container'><input type='number' name='quantity_to_change' step='1' min='0' value='".$search_row['ilosc']."' class='my_cart_numbers' required> <input type='submit' name='change_quantity' value='ZMIEŃ' class='super_option'></button> </div></form></td>";
+                            echo "<td class='fix'><form action='' method='post'><input type='hidden' name='product_id' value='".$search_row['id_produktu']."'> <div class='buttons_container'><input type='number' name='price_to_change' step='0.01' min='0' value='".$search_row['cena']."' class='my_cart_numbers' required> <input type='submit' name='change_price' value='ZMIEŃ' class='super_option'></button> </div></form></td>";
+                        }else{
+                            echo "<td  class='database_changer'>".$search_row['ilosc']." szt </td>";
+                            echo "<td>".$search_row['cena']." zł <input type='hidden' name='price' value=".$search_row['cena']."></td>";
+                        }
                         echo "<td>".$search_row['cena']." zł <input type='hidden' name='price' value=".$search_row['cena']."></td>";
 
                         echo "<td class='fix'> <div class='buttons_container'><input type='number' min='1' max='".$search_row['ilosc']."' class='my_cart_numbers' placeholder='ILOŚĆ' name='number_to_reduce' required> <button type='submit' name='add_to_cart' style='background-color:transparent;'><img src='http://infolut1.cba.pl/Baza/pictures/shopping-cart.png' class='to_buy_img'></button> </div></form></td>";
 
                         if($_SESSION['super_user']==1){
-                            echo "<td class='fix'><form action='' method='post'><input type='hidden' name='product_id' value='".$search_row['id_produktu']."'> <div class='buttons_container'><input type='number' name='price_to_change' step='0.01' class='my_cart_numbers' required> <input type='submit' name='change_price' value='ZMIEŃ' class='super_option'></button> </div></form></td></tr>";
-                        }                   
+                            echo "<td><input type='checkbox' class='edit_this' value='".$search_row['id_produktu']."' name='edit_this[]'></td></tr>";                        }                   
                     }
 
             }
@@ -365,10 +363,6 @@ if(isset($_SESSION['przypisana'])){
                     }
 
                         echo "<th>KUP</th>";
-                        if($_SESSION['super_user']==1){
-                            echo "<th>Zmień cene</th>";
-                            echo "</tr>";
-                        }
 
                     for($i=1;$i<=$rows;$i++){
 
@@ -378,14 +372,17 @@ if(isset($_SESSION['przypisana'])){
 
                         echo "<td>".$row['nazwa']."<input type='hidden' name='nazwa' value='".$row['nazwa']."'> </td>";
 
-                        echo "<td  class='database_changer'>".$row['ilosc']." szt </td>";
-
-                        echo "<td>".$row['cena']." zł <input type='hidden' name='price' value=".$row['cena']."></td>";
-
+                        if($_SESSION['super_user']==1){
+                            echo "<td class='fix'><form action='' method='post'><input type='hidden' name='product_id' value='".$row['id_produktu']."'> <div class='buttons_container'><input type='number' name='quantity_to_change' step='1' min='0' value='".$row['ilosc']."' class='my_cart_numbers' required> <input type='submit' name='change_quantity' value='ZMIEŃ' class='super_option'></button> </div></form></td>";
+                            echo "<td class='fix'><form action='' method='post'><input type='hidden' name='product_id' value='".$row['id_produktu']."'> <div class='buttons_container'><input type='number' name='price_to_change' step='0.01' min='0' value='".$row['cena']."' class='my_cart_numbers' required> <input type='submit' name='change_price' value='ZMIEŃ' class='super_option'></button> </div></form></td>";
+                        }else{
+                            echo "<td  class='database_changer'>".$row['ilosc']." szt </td>";
+                            echo "<td>".$row['cena']." zł <input type='hidden' name='price' value=".$row['cena']."></td>";
+                        }
                         echo "<td class='fix'> <div class='buttons_container'><input type='number' min='1' max='".$row['ilosc']."' class='my_cart_numbers' placeholder='ILOŚĆ' name='number_to_reduce' required> <button type='submit' name='add_to_cart' style='background-color:transparent;'><img src='http://infolut1.cba.pl/Baza/pictures/shopping-cart.png' class='to_buy_img'></button> </div></form></td>";
                         
                         if($_SESSION['super_user']==1){
-                            echo "<td class='fix'><form action='' method='post'><input type='hidden' name='product_id' value='".$row['id_produktu']."'> <div class='buttons_container'><input type='number' name='price_to_change' step='0.01' class='my_cart_numbers' required> <input type='submit' name='change_price' value='ZMIEŃ' class='super_option'></button> </div></form></td></tr>";
+                            echo "<td><input type='checkbox' class='edit_this' value='".$row['id_produktu']."' name='edit_this[]'></td></tr>";
                         }
                     }
 
@@ -409,13 +406,34 @@ if(isset($_SESSION['przypisana'])){
                         header('Refresh:0');
                     }
                 }
+
+// ZMIANA ILOŚCI
+                    if(isset($_POST['change_quantity'])){
+                        $id_to_change_quantity = $_POST['product_id'];
+                        $quantity_to_change = $_POST['quantity_to_change'];
+                        $query_to_change_quantity = "UPDATE Produkty SET ilosc = $quantity_to_change WHERE id_produktu = $id_to_change_quantity";
+                        if(mysqli_query($connect, $query_to_change_quantity)){
+                            $_SESSION['added']= "Zmieniono ilość produktu o id=".$id_to_change_quantity;
+                            $_SESSION['przypisana']=2;
+                            header('Refresh:0');
+                        }else{
+                            $_SESSION['added']= "Wystąpił problem podczas zmiany ilości! (".mysqli_error().")";
+                            $_SESSION['przypisana']=2;
+                            header('Refresh:0');
+                        }
+                    } 
 ?>
 </table>
 
 
 
 <?php
-
+if (isset($_POST['edit_this[]']) && is_array($_POST['edit_this[]'])) {
+    foreach ($_POST['edit_this[]'] as $id_produktu) {
+        // Tutaj możesz używać $id_produktu zaznaczonych checkboxów
+        echo "Zaznaczony id_produktu: " . $id_produktu . "<br>";
+    }
+}
 // DODAWANIE DO KOSZYKA
 
             if(isset($_POST['add_to_cart'])){
@@ -564,11 +582,11 @@ if(isset($_SESSION['przypisana'])){
 
                                             echo "<label class='cart_word' for='nazwa'>Nazwa produktu:</label>";
 
-                                            echo "<input type='text' name='nazwa'  class='cart_name' required><br>";
+                                            echo "<input type='text' name='nazwa' placeholder='np. Zakreślacz' class='cart_name' required><br>";
 
                                             echo "<div class='cart_flex'><div class='cart_half'>ILOŚĆ:</div> <div class='cart_half'>CENA:</div></div>";
 
-                                            echo "<div><input type='number' name='ilosc' class='cart_word_input' required><input type='number' name='cena' step='0.01' class='cart_word_input' required></div>";
+                                            echo "<div><input type='number' placeholder='np. 10' name='ilosc' class='cart_word_input' required><input type='number' name='cena' step='0.01' class='cart_word_input' placeholder='np. 19.99' required></div>";
 
                                             echo "<br><label class='cart_word' for='magazyn'>Wybierz magazyn:</label>";
 
@@ -725,7 +743,7 @@ if(isset($_SESSION['przypisana'])){
                                         }
 
                                         if($_SESSION['super_user'] == 1){
-                                            echo "<button class='my_database' name='my_database'><img src='http://infolut1.cba.pl/Baza/pictures/add_to_database.png' ></button>";
+                                            echo "<div class='admin_tools_container'>   <button class='tool_item my_database' name='my_database'><img src='http://infolut1.cba.pl/Baza/pictures/add_to_database.png' ></button>   <button class='tool_item add_to_exist' style='display:none' name='add_to_exist'><img src='http://infolut1.cba.pl/Baza/pictures/add_to_exist.png' ></button>  </div>";
                                         }
 
                                     if($_SESSION['przypisana']==1)

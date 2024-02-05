@@ -34,19 +34,30 @@ if(!isset($_SESSION['logged']) || $_SESSION['super_user']==0){
                       echo "<form action='' method='post'>
                             <label for='search_term'>Search by Email or ID:</label><input type='text' class='password' name='search_term' id='search_term' required><button type='submit' class='change' name='search_user'>Search User</button>
                             </form>";
+
+                            echo "<tr>
+                            <th class='password'>ID</th>
+                            <th class='password'>Login</th>
+                            <th class='password'>Email</th>
+                            <th class='password'>Ranga</th>
+                            <th class='password'>Zmiana adresu</th>
+                            <th class='password'>Zmiana rangi</th>
+                            <th class='password'>Usuń</th>
+                            </tr>";
+    
                       echo "<form action='' method='post'>";
                       for ($i=1; $i <= $list_num_rows; $i++) {
                         $list_row=mysqli_fetch_assoc($list);
-                        echo "<tr><td class='password'>".$list_row['id']."</td>
+                        echo "<tr>
+                          <td class='password'>".$list_row['id']."</td>
                           <td class='password'>". $list_row['login']."</td> 
                           <td class='password'>".$list_row['email']."</td>
-                          <td class='password'><input type='text' name='email_change[" . $list_row['id'] . "]' placeholder='Nowy email' class='input-field' required></td>
                           <td class='password'>".$list_row['rank']."</td>
-                          <td class='password'><form action='' method='post'><input type='hidden' name='id_to_change' value='" . $list_row['id'] . "'><select name='rank_change' class='select'><option value='2'>Administrator</option><option value='1'>Użytkownik</option><!-- Dodaj opcje dla innych rang --></select><button type='submit' name='change_rank' class='change'>Zmień rangę</button><button type='submit' name='change_email[" . $list_row['id'] . "]' class='change'>Change Email</button></form></td>
+                          <td class='password'><form action='' method='post'><input type='hidden' name='id_to_change_email' value='" . $list_row['id'] . "'><input type='text' name='email_change[" . $list_row['id'] . "]' placeholder='Nowy email' class='input-field' required><button type='submit' name='change_email' class='change'>Change Email</button></form></td>
+                          <td class='password'><form action='' method='post'><input type='hidden' name='id_to_change' value='" . $list_row['id'] . "'><select name='rank_change' class='select'><option value='2'>Administrator</option><option value='1'>Użytkownik</option><!-- Dodaj opcje dla innych rang --></select><button type='submit' name='change_rank' class='change'>Zmień rangę</button></form></td>
                           <td class='password'><form action='' method='post'><input type='hidden' name='id_to_delete' value='".$list_row['id']."'><button style='border:none;cursor:pointer;' type='submit' name='user_delete'><img src='http://infolut1.cba.pl/Baza/pictures/remove.png'></button></form></td>
                           </tr>";
                       }
-
                       echo "</form>";
                       echo "</table>";
                     }
@@ -117,23 +128,24 @@ if(!isset($_SESSION['logged']) || $_SESSION['super_user']==0){
                         exit();
                     }
                 }
-            }
-              // Handle email change when the form is submitted
-              if (isset($_POST['change_email'])) {
-                foreach ($_POST['email_change'] as $user_id => $new_email) {
-                    // Update the email address in the database
-                    $q_update_email = "UPDATE `user` SET `email` = '$new_email' WHERE `id` = '$user_id'";
-                    if ($q_user = mysqli_query($connect, $q_update_email)) {
-                        $_SESSION['manager_error'] = 'Changed email for user with ID ' . $user_id;
-                        header('Refresh:0');
-                        exit();
-                    } else {
-                        $_SESSION['manager_error'] = 'Failed to change email for user with ID ' . $user_id;
-                        header('Refresh:0');
-                        exit();
-                    }
-                }
               }
+                // Handling the email change - check if the form was submitted
+                if (isset($_POST['change_email'])) {
+                  foreach ($_POST['email_change'] as $user_id_email_change => $new_email) {
+                      if (!empty($new_email)) { // Ensure the new email is not empty
+                          $q_update_email = "UPDATE `user` SET `email` = '$new_email' WHERE `id` = '$user_id_email_change'";
+                          if ($q_email_change = mysqli_query($connect, $q_update_email)) {
+                              $_SESSION['manager_error'] = 'Zmieniono email użytkownika o ID ' . $user_id_email_change;
+                              header('Refresh:0');
+                              exit();
+                          } else {
+                              $_SESSION['manager_error'] = 'Nie udało się zmienić emaila użytkownika o ID ' . $user_id_email_change;
+                              header('Refresh:0');
+                              exit();
+                          }
+                      }
+                  }
+                }
               ?>
 
 

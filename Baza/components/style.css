@@ -167,7 +167,7 @@ body{
 .my_cart:hover{
     background-color: white;
 }
-.my_database{
+.admin_tools_container{
     position:fixed;
     display:flex;
     justify-content: center;
@@ -175,18 +175,24 @@ body{
     bottom:10px;
     left:calc(50% - 30px);
     transform: translateX(-50%);
+}
+.tool_item{
     border-radius:50%;
     background-color: #dbf3fb;
     height:50px;
     width:50px;
+    margin:2px;
     cursor:pointer;
 }
-.my_cart, .my_database{
-    transition: all .5s;
+.my_cart, .tool_item{
+    transition: all .3s;
 }
 
 .my_database:hover{
     background-color: #78d6f5;
+}
+.add_to_exist:hover{
+    background-color: #aaf578;
 }
 
 .buttons_container{

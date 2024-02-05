@@ -11,4 +11,22 @@ $('.my_cart').click(function(){
         $('.shop_page_container').css('right', '-400px');
         isHide=true;
     }
+});
+
+
+$(document).ready(function () {
+    // Obsługa zdarzenia zmiany checkboxa
+    $('input[name="edit_this[]"]').change(function () {
+        updateButtonVisibility();
+    });
+
+    // Funkcja do aktualizacji widoczności przycisku
+    function updateButtonVisibility() {
+        var checkedCheckboxes = $('input[name="edit_this[]"]:checked');
+        if (checkedCheckboxes.length > 0) {
+            $('.add_to_exist').show();
+        } else {
+            $('.add_to_exist').hide();
+        }
+    }
 });
